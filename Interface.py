@@ -38,7 +38,7 @@
 # (por exemplo, o parâmetro de "Te"mperatura da Smart "S"leeve "8" é acionada pelo botão "But_Te_S8" e chama sua função "grafTe_8" que gera o gráfico da temperatura em função do tempo.
 #  A turbidez segue um modelo "But_Tu_Sn", sendo n o número da Smart Sleeve).
 
-#                                                        *******   "MAS AUGUSTO, QUAL A NOSSA TAREFA?"   *******
+#                                                        *******   "MAS AUGUSTO, SEU SER ILUMINADO, QUAL A NOSSA TAREFA?"   *******
 #       * Vocês já devem ter percebido que há alguns valores na interface (exemplo, temperatura de 35℃, etc): estes valores são estáticos e só estão lá por razões de demonstração.
 # A interface de verdade deve ter valores dinâmicos, atualizados constantemente de acordo com o que os sensores leem. A principal tarefa de vocês será 
 # IMPORTAR VALORES DE LEITURA DO EVOLVER E FAZER COM QUE ELES SEJAM EXIBIDOS NOS SEUS RESPECTIVOS WIDGETS, ATUALIZANDO CONTINUAMENTE. 
