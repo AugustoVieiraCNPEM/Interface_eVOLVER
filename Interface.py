@@ -7,23 +7,71 @@
 
 ###############################################################################################################################
 # Bom dia, meninas. 
-#     *Este é o código referente à interface do eVOLVER. Rode-o como qualquer outro programa python (prompt de comando > "python Interface.py").
+
+#     *Este é o código referente à interface do eVOLVER. Rode-o como qualquer outro programa python (prompt de comando > "cd <local do arquivo>" > "python Interface.py").
+
 #     *Além desta visão geral, espalhei pelo código alguns comentários ao lado de algumas linhas específicas. Ficará mais fácil associar
 # o que estou falando com a linha referente. Todo comentário começa com "comentário", então basta buscar por esta palavra (Ctrl+F)
-# para navegar facilmente pelos comnetários ao longo do código.
+# para navegar facilmente pelos comentários ao longo do código.
+
 #     *Como sabem, estamos criando esta interface utilizando o PyQT. O design em si, o arranjo dos botões, foi feito utilizando o QT Designer,
 #     e a partir dele geramos a maior parte deste código, conversão obtida a partir do comando:
 #         > pyuic6 -x final.ui -o Interface.py
 #     Sendo final.ui o nome do arquivo criado no QTDesigner. Algumas observações importantes: 
 #         1) Este comando deve ser inserido no mesmo folder no qual o .ui se encontra.
-#         2) O "6" em pyqic6 se refere à versão do PyQT instalada - se usarem outra versão, como a PyQT4, o comando será pyuic4, e assim por diante. Por conveniência, vou chamá-lo agora de PyQT.
-#         3) Em alguns casos, vocês podem receber a notificação "'pyuic6' is not recognized as an internal or external command", mesmo tendo instalado o PyQT. 
-#         Isto pode ocorrer principalmente quando o PATH do folder do PYQT não é instalado no sistema (em outras palavras, o sistema não sabe como se orientar entre os diretórios até o que contém o PYQT e seus comandos).
-#         Para resolver isto, descubra e copie o caminho do arquivo pyuic5 (C:/User...), vá até "Editar as Variáveis de Abiente do Sistema" (digite no campo de pesquisa do windows),
+#         2) O "6" em pyuic6 se refere à versão do PyQT instalada - se usarem outra versão, como a PyQT4, o comando será pyuic4, e assim por diante. Por conveniência, vou usar o PyQT6, que é o que instalei.
+#         3) Em alguns casos, vocês podem receber a notificação "'pyuic6' is not recognized as an internal or external command", mesmo tendo instalado o PyQT6. 
+#         Isto pode ocorrer principalmente quando o PATH do folder do PyQT6 não é instalado no sistema (em outras palavras, o sistema não sabe como se orientar entre os diretórios até o que contém o PyQT6 e seus comandos).
+#         Para resolver isto, descubra e copie o caminho do arquivo pyuic6 (C:/User..., vocês podem descobrir isto com o comando "pip install PyQT". Se o PyQT6 já estiver instalado, o local será retornado), 
+#         vá até "Editar as Variáveis de Abiente do Sistema" (digite no campo de pesquisa do windows),
 #         clique em "variáveis do ambiente">"path" (há um no campo de variáveis do usuário e outro em variáveis do sistema. Recomendo fazer em ambos)>"new", cole o caminho do arquivo e clique em "ok" e "ok" para fechar.
-#         Feito isso, já deve funcionar. Um tutorial em vídeo pode ser encontrado em https://www.youtube.com/watch?v=2GtYO3KY2HI&ab_channel=AISOFT 
+#         Feito isso, já deve funcionar. Um tutorial em vídeo pode ser encontrado em https://www.youtube.com/watch?v=2GtYO3KY2HI&ab_channel=AISOFT (em Hindu, mas é bem intuitivo).
+#           4) As mudanças feitas no código NÃO AFETAM O ARQUIVO .UI. Portanto, se precisarem mudar alguma coisa no .ui, tenham certeza que está tudo de acordo com seus desejos (descobri essa da pior maneira).
+
+#       *Criar elementos mais estéticos, como a imagem de plano de fundo e o degradê azul, não são o forte do PYQT. De maneira resumida, 
+# todos os elementos devem ser arranjados em grade (falo mais sobre isso no documento do QTDesigner), e isso impossibilita que uma imagem seja inserida e esticada para cobrir todo o fundo.
+# Assim, estes elementos foram introduzidos no código (marcados com "comentário", novamente, basta dar um Ctrl+F). Os caminhos das imagens utilizadas são referentes a onde elas estão no MEU COMPUTADOR (ex: self.label.setPixmap(QtGui.QPixmap("C:/Users/augsto.freitas/Desktop/Interface/backgroundfinal.jpg"))).
+# Se forem rodar em outro computador ou na RaspberryPi, VOCÊS PRECISAM ATUALIZAR OS CAMINHOS DE ACORDO COM O LOCAL ONDE AS IMAGENS FORAM SALVAS. Por conveniência, sempre coloquem na mesma pasta do arquivo .py que vão rodar. Outra coisa: o caminho utiliza "\" para indicar os caminhos, mas o Python não os reconhece como caracteres - troque cada "\" por "/" quando colocarem os caminhos nos códigos.
+      
+#       *A interface contém botões que, quando pressionados, devem exibir um gráfico do parâmetro referente de acordo com o tempo. Resolvi fazer isso com 
+# MatPlotLib: cada parâmetro possui um botão que chama uma função que gera um gráfico quando acionada, todos nomeados de maneira padronizada e intuitiva 
+# (por exemplo, o parâmetro de "Te"mperatura da Smart "S"leeve "8" é acionada pelo botão "But_Te_S8" e chama sua função "grafTe_8" que gera o gráfico da temperatura em função do tempo.
+#  A turbidez segue um modelo "But_Tu_Sn", sendo n o número da Smart Sleeve).
+
+#                                                        *******   "MAS AUGUSTO, QUAL A NOSSA TAREFA?"   *******
+#       * Vocês já devem ter percebido que há alguns valores na interface (exemplo, temperatura de 35℃, etc): estes valores são estáticos e só estão lá por razões de demonstração.
+# A interface de verdade deve ter valores dinâmicos, atualizados constantemente de acordo com o que os sensores leem. A principal tarefa de vocês será 
+# IMPORTAR VALORES DE LEITURA DO EVOLVER E FAZER COM QUE ELES SEJAM EXIBIDOS NOS SEUS RESPECTIVOS WIDGETS, ATUALIZANDO CONTINUAMENTE. 
+
+#       * Os valores exibidos são determinados de acordo com códigos parecidos ao seguinte:
+
+#                 self.But_Te_S11.setText(_translate("MainWindow", "39,4"))
+
+# Ou seja, o Botão de Tesmperatura da Sleeve 11 exibe um valor estático 39,4. Vocês precisarão encontrar uma maneira de:
+#         1) Importar o valor lido da temperatura na sleeve 11;
+#         2) Salvá-lo em uma variável com nome PADRONIZADO (ex, var_te_S11 para a 'variável de temperatura da Sleeve 11'. Façam isso, senão vocês vão se perder, confiem em mim);
+#         3) O .setText só aceita strings como inputs. Portanto, transformem a variável do item 2 de uma float para string (var_te_S11 = str(var_te_S11))
+#         4) Substitua "39,4" pela variável que criaram. Façam isso para todos os parâmetros. 
+      
+#       * O principal obstáculo é que os valores devem ser atualizados constantemente, e normalmente utilizamos um loop para isto (for, while, etc).
+# Entretanto, se fizermos um loop sem inserirmos o código da interface, ela nunca será gerada (o código nunca "entrará" na parte da interface e só ficará atualizadno os valores).
+# Antes de sair, estava trabalhando em fazer exatamente isso, mas não sei se dará tempo de acabar antes do fim do meu estágio. Falem com o Guilherme e com a Patricia/meninos do SEI, que eles podem dar outras ideias.
+# Também pensei em fazer uma coisa chamada multithreading, mas o Guilherme me aconselhou a não fazer isso, pois é muito avançado e desnecessário.
+# Minha sugestão é:
+#           1) Criem um loop infinito ("while True" deve funcionar) e insiram o código referente à interface dentro dele (lembrem-se, vocês podem indentar várias linhas 
+#           ao mesmo tempo ao selecionarem-nas e pressionarem shift no editor de texto "Sublime" ou aqui no github. Acho que dá pra fazer nos outros também, mas aí tem que ver os comandos);
+#           2) Dentro do loop, antes da interface, criem um código que leia e salve os valores lidos como explicado anteriormente. O protocolo de comunicação é o GPIO. Vou deixar um 
+#              arquivo detalhando o funcionamento e como mexer nele.
+#           3) Os códigos das funções dos gráficos são apenas ilustrativos, e só os coloquei lá para já configurar os botões. Vocês precisam codificá-los para exibir o gráfico do parâmetro x tempo. Sugiro estudar a documentação do MatPlotLib. Também fiz um código parecido para o sensor das bombinhas com a ajuda do Guilherme. Vou deixar no repositório para vocês darem uma olhada.
+#           4) Façam com que o loop exiba a interface, segure por uns 5 segundos, feche e a abra de novo, com os valores atualizados.
         
-        
+# Acho que basicamente é isso. Boa sorte, e trabalhem com o Guilherme para que tudo corra bem. Qualquer coisa, podem também entrar em contato pelo whatsapp (pela bagatela de apenas R$50,00/minuto).
+
+# Boa sorte e sucesso, 
+
+# Augusto.
+
+# PS: vão atualizando o que conseguirem por aqui, porque estou bem interessado com o que vocês vão fazer.
  ###############################################################################################################################
 
 import datetime
@@ -33,33 +81,22 @@ import numpy
 import matplotlib.pyplot as plt
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel
-from JanelaGrafico import Ui_JanelaGrafico
 from PyQt6.QtGui import QPalette, QPixmap
-import imagens
-#from inputs import x_Te_S3, x_Te_S3_string
 
-# for i in range(10):
-#         x_Te_S3 = 20.6+i                          #atrelar esta variável float a um valor lido possibilita a sua exibição no botão respectivo (temperatura da S3, neste caso)
-#         x_Te_S3_string=str(x_Te_S3)             #É necessário convertê-lo em str, pois é o único formato aceito pela parte do código responsável por determinar qual valor será exibido.
-#         time.sleep(0.3)
-
-# x_Te_S3 = x_Te_S3+1                          #atrelar esta variável float a um valor lido possibilita a sua exibição no botão respectivo (temperatura da S3, neste caso)
-# x_Te_S3_string=str(x_Te_S3)             #É necessário convertê-lo em str, pois é o único formato aceito pela parte do código responsável por determinar qual valor será exibido.
-
-# x_Te_S3 = 35
-# x_Te_S3_string=str(x_Te_S3)
 
 class Ui_MainWindow(object):            
 
-    # global x_Te_S3, x_Te_S3_string
-    def openWindow(self):   #Função que "chama" a abertura da janela.
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_JanelaGrafico()
-        self.ui.setupUi(self.window)
-        self.window.show()        
+    def grafTe_1(x,y): #Comentário: estes são as funções que geram os gráficos de parâmetroxtempo. Lê-se "GRAFico de TEmperatura da Sleeve 1". Os códigos aqui escritos ainda não realizam esta função, e só servem para já configurar os botões. 
+        x = [datetime.datetime.now() + datetime.timedelta(hours=i) for i in range(12)]
+        y = [i+random.gauss(0,1) for i,_ in enumerate(x)]
+        # plot
+        plt.plot(x,y)
+        # beautify the x-labels
+        plt.gcf().autofmt_xdate()
+        plt.show()      
 
 
-    def grafTu_1(x,y):
+    def grafTu_1(x,y): #Comentário: mesma coisa aqui, mas desta vez, o parâmetro é a turbidez. 
         x = [datetime.datetime.now() + datetime.timedelta(hours=i) for i in range(12)]
         y = [i+random.gauss(0,1) for i,_ in enumerate(x)]
         # plot
@@ -341,15 +378,15 @@ class Ui_MainWindow(object):
     
 
 
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow): #Comentário: Aqui já entramos no código da interface em si, que foi gerado a partir do comando pyuic6 do arquivo .ui
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 480)
+        MainWindow.resize(800, 480) #Comentário: Ajuste das dimensões da janela de acordo com a resolução da tela LCD. 
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QtCore.QSize(800, 480))
+        MainWindow.setMinimumSize(QtCore.QSize(800, 480)) #Comentário: Determina o tamanho mínimo da interface como o mesmo da resolução da tela LCD
         width = MainWindow.frameGeometry().width()    
         height = MainWindow.frameGeometry().height()
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
@@ -357,16 +394,16 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
+        self.gridLayout.setObjectName("gridLayout")#Comentário Organiza os elementos em uma grade. super importante para garantir o alinhamento entre eles e que os mesmos se ajustem automaticamente ao tamamnho da janela.  
         self.label = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(0, 0, width, height))
+        self.label.setGeometry(QtCore.QRect(0, 0, width, height))#Comentário "label" é o nome que se dá à imagem de plano de fundo. Aqui, definimos que a imagem será posicionada no ponto 0,0 (canto superior esquerdo da interface) e ajustada aos tamanhos horizontal ('width') e vertical ('height') da interface.  
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap(":/Imagem_logo_evolver/backgroundfinal.jpg"))
+        self.label.setPixmap(QtGui.QPixmap(":/Imagem_logo_evolver/backgroundfinal.jpg")) #Comentário: define que a label terá a imagem de fundo "backgroundfinal.png". 
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
-        self.label_4 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(2, 0, 801, 480))
-        self.label_4.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.511, y1:0.511, x2:0.510591, y2:0, stop:0.352273 rgba(255, 255, 255, 0), stop:0.579545 rgba(215, 233, 255, 213), stop:0.715909 rgba(88, 155, 255, 217), stop:0.948864 rgba(0, 30, 86, 254));")
+        self.label_4 = QtWidgets.QLabel(parent=self.centralwidget) #Comentário: Label4 é o label que cria o degradê; 
+        self.label_4.setGeometry(QtCore.QRect(0, 0, 800, 480))#Comentário: Define que o gradiente terá as mesmas dimensões da tela
+        self.label_4.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0.511, y1:0.511, x2:0.510591, y2:0, stop:0.352273 rgba(255, 255, 255, 0), stop:0.579545 rgba(215, 233, 255, 213), stop:0.715909 rgba(88, 155, 255, 217), stop:0.948864 rgba(0, 30, 86, 254));")#Comentário: Configuração do degradê. É gerada automaticamente pelo QTdesigner. Se quiserem fazer alguma alteração, sugiro que o façam no QT designer e copiem no código .py (Abram QT designer, arrastem e soltem um "label" na janela principal, cliquem com o botão direito, selecionem "ChangeStyleSheet">"AddGradient">"Background color")
         self.label_4.setObjectName("label_4")
         self.textEdit_195 = QtWidgets.QTextEdit(parent=self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Maximum)
@@ -387,8 +424,8 @@ class Ui_MainWindow(object):
         palette.setBrush(QtGui.QPalette.ColorGroup.Disabled, QtGui.QPalette.ColorRole.Base, brush)
         self.textEdit_195.setPalette(palette)
         font = QtGui.QFont()
-        font.setFamily("Roboto Mono")
-        font.setPointSize(18)
+        font.setFamily("Roboto Mono")#Comentário: define a fonte da escrita. Ainda não concordamos em qual fonte utilizar (por isso tem tantas diferentes), então isso precisa ser decidido. 
+        font.setPointSize(18) #Comentário: define o tamanho da letra
         self.textEdit_195.setFont(font)
         self.textEdit_195.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.textEdit_195.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -464,24 +501,24 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.But_Te_S4.setFont(font)
-        self.But_Te_S4.setStyleSheet("QPushButton {\n"
+        self.But_Te_S4.setStyleSheet("QPushButton {\n"  #Comentário: Style Sheet é o elemento de estilização do componente (se um botão é vermelho, tem degradê ou não, etc)
 "    color: #000000;\n"
 "    \n"
-"    border-radius: 6px;\n"
+"    border-radius: 6px;\n"  #Comentário: Define que o botão será um retângulo de bordas arredondadas.
 "    border-style: outset;\n"
-"    border-left:1.5px solid rgb(0, 0, 0);\n"
-"border-bottom:1.5px solid rgb(0, 0, 0);\n"
-"    background-color: rgb(255, 0, 4);\n"
+"    border-left:1.5px solid rgb(0, 0, 0);\n" #Comentário define que o botão terá uma linha preta na parte da esquerda e
+"border-bottom:1.5px solid rgb(0, 0, 0);\n"   #Outra em baixo. Dá a impressão de que o botão está flutuando ou tem uma sombra, deixando-o mais evidente
+"    background-color: rgb(255, 0, 4);\n"     #Comentário: Define a cor de fundo. É interessante encontrar uma maneira de deixar este ícone como branco/prata estilizado (há algumas opções) caso o valor lido é igual ao input do usuário (ou, digamos, até 90% deste valor) e vermelho caso contrário.
 "    }\n"
 "\n"
-"QPushButton:hover {\n"
+"QPushButton:hover {\n" #Comentário: também é o estilo do botão, mas quando o usuário paira o cursor sobre ele (indica que é possível pressioná-lo). Não vamos utilizar visto que é touchscreen, mas é bom saber. 
 "    background: qradialgradient(\n"
 "        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
 "        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
 "        );\n"
 "    }\n"
 "\n"
-"QPushButton:pressed {\n"
+"QPushButton:pressed {\n" #Comentário: Mesma coisa, mas para o botão pressionado.
 "    border-style: inset;\n"
 "    background: qradialgradient(\n"
 "        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
@@ -515,7 +552,7 @@ class Ui_MainWindow(object):
         self.textEdit_184.setFont(font)
         self.textEdit_184.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.textEdit_184.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.textEdit_184.setReadOnly(True)
+        self.textEdit_184.setReadOnly(True)# Comentário: para qualquer coisa que não é um botão, garante que tal elemento só serve para observação, e não interação com o usuário.
         self.textEdit_184.setObjectName("textEdit_184")
         self.gridLayout.addWidget(self.textEdit_184, 8, 0, 1, 1)
         self.But_Te_S2 = QtWidgets.QPushButton(parent=self.centralwidget)
@@ -561,20 +598,20 @@ class Ui_MainWindow(object):
         self.But_Te_S2.setObjectName("But_Te_S2")
         self.But_Te_S2.clicked.connect(self.grafTe_2)
         self.gridLayout.addWidget(self.But_Te_S2, 0, 2, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.But_Te_S1 = QtWidgets.QPushButton(parent=self.centralwidget)#Comentário: cria um widget tipo botão 'But_Te_S1'
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
-        self.pushButton.setMaximumSize(QtCore.QSize(70, 31))
+        self.But_Te_S1.setSizePolicy(sizePolicy)
+        self.But_Te_S1.setMaximumSize(QtCore.QSize(70, 31))#Comentário Define as dimensões do botão
         font = QtGui.QFont()
         font.setFamily("Roboto Mono")
         font.setPointSize(20)
         font.setBold(False)
         font.setWeight(50)
-        self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet("QPushButton {\n"
+        self.But_Te_S1.setFont(font)
+        self.But_Te_S1.setStyleSheet("QPushButton {\n"
 "    color: #000000;\n"
 "    \n"
 "    border-radius: 6px;\n"
@@ -598,9 +635,9 @@ class Ui_MainWindow(object):
 "        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
 "        );\n"
 "    }")
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton.clicked.connect(self.openWindow)  #Função que atribui a função de abrir a nova janela ao botão "pushButton".
-        self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
+        self.But_Te_S1.setObjectName("But_Te_S1")# comentário Define nome do botão
+        self.But_Te_S1.clicked.connect(self.grafTe_1) #Comentário: Define que o botão chamará a função em questão quando pressionado.
+        self.gridLayout.addWidget(self.But_Te_S1, 0, 1, 1, 1) #Comentário Adiciona o botão à grade na posição 0,1,1,1
         self.textEdit_183 = QtWidgets.QTextEdit(parent=self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Maximum)
         sizePolicy.setHorizontalStretch(0)
@@ -4071,7 +4108,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, MainWindow): #Comentário: Esta é a partedo código que dita o que será escrito dentro de cada widget. Utiliza Majoritariamente HTML, mas é gerado automaticamente no QTDesigner.
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.textEdit_195.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -4095,8 +4132,8 @@ class Ui_MainWindow(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'JetBrains Mono Medium\'; font-size:20pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt;\">PUMP</span></p></body></html>"))
-        self.But_Te_S2.setText(_translate("MainWindow", "45,6"))
-        self.pushButton.setText(_translate("MainWindow", "34,6"))
+        self.But_Te_S2.setText(_translate("MainWindow", "45,6")) #Comentário: Dita que o botão de temperatura da S2 exibirá 45,6 (valor arbitrário). É aqui que vocês precisam inserir a string variável que carrega o valor lido pelos sensores. 
+        self.But_Te_S1.setText(_translate("MainWindow", "34,6"))
         self.textEdit_183.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -4486,20 +4523,12 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:48pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:36pt; font-weight:600; color:#ff5d00;\">eVOLVER</span><span style=\" font-size:16pt; color:#ffffff;\">By FynchBio</span><span style=\" font-size:16pt; color:#ffffff; vertical-align:super;\">©</span></p></body></html>"))
 
-# stylesheet = """
-#     MainWindow {
-#         background-image: url("C:/Users/augsto.freitas/Desktop/Interface/backgroundfinal.jpg"); 
-#         background-repeat: no-repeat; 
-#         background-position: center;
-#     }
-# """
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    # app.setStyleSheet(stylesheet)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    MainWindow.show()
+    MainWindow.show()#Comentário Até aqui, o código ditou como a interface é construída. Esta é a função que de fato a faz aparecer. 
     sys.exit(app.exec())
