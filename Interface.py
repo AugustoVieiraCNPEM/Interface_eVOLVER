@@ -22,7 +22,7 @@
 #         2) O "6" em pyuic6 se refere à versão do PyQT instalada - se usarem outra versão, como a PyQT4, o comando será pyuic4, e assim por diante. Por conveniência, vou usar o PyQT6, que é o que instalei.
 #         3) Em alguns casos, vocês podem receber a notificação "'pyuic6' is not recognized as an internal or external command", mesmo tendo instalado o PyQT6. 
 #         Isto pode ocorrer principalmente quando o PATH do folder do PyQT6 não é instalado no sistema (em outras palavras, o sistema não sabe como se orientar entre os diretórios até o que contém o PyQT6 e seus comandos).
-#         Para resolver isto, descubra e copie o caminho do arquivo pyuic6 (C:/User..., vocês podem descobrir isto com o comando "pip install PyQT". Se o PyQT6 já estiver instalado, o local será retornado), 
+#         Para resolver isto, descubra e copie o caminho do arquivo pyuic6 (C:/User..., vocês podem descobrir isto com o comando "pip install PyQT6". Se o PyQT6 já estiver instalado, o local será retornado), 
 #         vá até "Editar as Variáveis de Abiente do Sistema" (digite no campo de pesquisa do windows),
 #         clique em "variáveis do ambiente">"path" (há um no campo de variáveis do usuário e outro em variáveis do sistema. Recomendo fazer em ambos)>"new", cole o caminho do arquivo e clique em "ok" e "ok" para fechar.
 #         Feito isso, já deve funcionar. Um tutorial em vídeo pode ser encontrado em https://www.youtube.com/watch?v=2GtYO3KY2HI&ab_channel=AISOFT (em Hindu, mas é bem intuitivo).
