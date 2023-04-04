@@ -1,12 +1,12 @@
 ##########################################################################################################################
-Olá meninas.
+# Olá meninas.
 
-Este é o código que falei, das bombinhas. Resolvi colocá-lo aqui porque ele possui uma funcionalidade que será muito útil no seu projeto: como fazer gráficos que se atualizam automaticamente, utilizam o tempo atual em um dos eixos e os ajusta automaticamente para mantê-lo legível e organizado.
+# Este é o código que falei, das bombinhas. Resolvi colocá-lo aqui porque ele possui uma funcionalidade que será muito útil no seu projeto: como fazer gráficos que se atualizam automaticamente, utilizam o tempo atual em um dos eixos e os ajusta automaticamente para mantê-lo legível e organizado.
 
-Novamente, todos os comentários possuem um "comentário" no início, então vocês podem dar um CTRL+F para navegar entre eles facilmente. 
+# Novamente, todos os comentários possuem um "comentário" no início, então vocês podem dar um CTRL+F para navegar entre eles facilmente. 
 
-Abraços.
-Augusto.
+# Abraços.
+# Augusto.
 ##########################################################################################################################
 
 import serial #Comentário Biblioteca de comunicação serial entre o arduino e o RPi
@@ -15,7 +15,6 @@ from datetime import datetime
 from time import sleep
 import matplotlib
 from matplotlib.dates import date2num, DateFormatter
-from matplotlib.animation import FuncAnimation
 from PIL import ImageTk
 import numpy as np
 matplotlib.use('TkAgg') #Comentário Backend utilizado. importante caso formos utilizar a RPi no modo headless (sem monitor) ou não.
@@ -73,19 +72,19 @@ if __name__ == '__main__':
     while True:  #comentário cria um loop infinito.
         if ser.in_waiting > 0:#comentário caso haja entrada de dados pelo port serial
             line = ser.readline().decode('utf-8').rstrip() #comentário cria uma variável "line" e salva nela o que está escrito na entrada de dados.
-            line = re.split('(\d+)', line)
+            line = re.split('(\d+)', line) #Comentário "Quebra" a string, serparando os números das letras (útil para extrair o valor enviado) 
             #print(line)
-            sort()
+            sort() #Comentário  Chama a função sort(), definida anteriormente
             ax= plt.subplot()
-            plt.plot(esv_t, esv, color='red', label="Tempo de Esvaziamento")
-            plt.plot(enc_t, enc, color='blue',label="Tempo de Enchimento")
-            plt.xlabel("Data e Hora")
-            plt.ylabel("Tempo(ms)")
-            handles, labels = plt.gca().get_legend_handles_labels()
-            by_label = dict(zip(labels, handles))
-            plt.legend(by_label.values(), by_label.keys())
-            ax.xaxis.set_major_formatter(DateFormatter('%d/%m/%Y %H:%M'))
-            plt.setp(ax.get_xticklabels(), rotation=30, ha='right')
+            plt.plot(esv_t, esv, color='red', label="Tempo de Esvaziamento") #Comentário Plot da curva de esvaziamento
+            plt.plot(enc_t, enc, color='blue',label="Tempo de Enchimento") #Comentário  Plot da curva de enchimento
+            plt.xlabel("Data e Hora") #Comentário Título do eixo x: data e Hora 
+            plt.ylabel("Tempo(ms)") #Comentário Título do eixo y: Tempo(ms)
+            handles, labels = plt.gca().get_legend_handles_labels() #Comentário  Configuração para que a legenda não se repita a cada iteração
+            by_label = dict(zip(labels, handles)) #Comentário  Configuração para que a legenda não se repita a cada iteração
+            plt.legend(by_label.values(), by_label.keys())  #Comentário Exibe a legenda
+            ax.xaxis.set_major_formatter(DateFormatter('%d/%m/%Y %H:%M')) #Comentário Define o formato da data e hora no eixo
+            plt.setp(ax.get_xticklabels(), rotation=30, ha='right') #Comentário Organiza os elementos do eixo x para que eles não se sobreponham
             # plt.legend()
             plt.pause(5)
 
