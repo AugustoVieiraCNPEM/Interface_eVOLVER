@@ -602,7 +602,7 @@ class Ui_MainWindow(object):
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.But_Te_S1.sizePolicy().hasHeightForWidth())
         self.But_Te_S1.setSizePolicy(sizePolicy)
         self.But_Te_S1.setMaximumSize(QtCore.QSize(70, 31))#Comentário Define as dimensões do botão
         font = QtGui.QFont()
